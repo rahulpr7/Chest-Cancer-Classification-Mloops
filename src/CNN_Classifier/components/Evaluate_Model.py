@@ -5,7 +5,10 @@ import mlflow.keras
 from urllib.parse import urlparse
 from CNN_Classifier.entity.config_entity import EvaluationConfig
 from CNN_Classifier.utils.common import save_json
+import dagshub
 
+
+dagshub.init(repo_owner='rahulpr7', repo_name='Chest-Cancer-Classification-Mloops', mlflow=True)
 
 class Evaluation:
     def __init__(self, config: EvaluationConfig):
@@ -31,7 +34,7 @@ class Evaluation:
 
         self.test_generator = test_datagenerator.flow_from_directory(
             directory=self.config.training_data,
-            subset="Test",
+            subset="validation",
             shuffle=False,
             **dataflow_kwargs
         )
