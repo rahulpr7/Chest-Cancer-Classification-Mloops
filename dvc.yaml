@@ -1,0 +1,54 @@
+stages:
+  data_ingestion:
+    cmd: python src/CNN_Classifier/pipeline/Stage1_Data_Ingestion.py
+    deps:
+      - src/CNN_Classifier/pipeline/Stage1_Data_Ingestion.py
+      - config/config.yaml
+    outs:
+      - artifacts/data_ingestion/Cancer Data
+
+
+  prepare_base_model:
+    cmd: python src/CNN_Classifier/pipeline/Stage2_Prepare_Base.py
+    deps:
+      - src/CNN_Classifier/pipeline/Stage2_Prepare_Base.py
+      - config/config.yaml
+    params:
+      - IMAGE_SIZE
+      - INCLUDE_TOP
+      - CLASSES
+      - WEIGHTS
+      - LEARNING_RATE
+    outs:
+      - artifacts/prepare_base_model
+
+
+  training:
+    cmd: python src/CNN_Classifier/pipeline/Stage3_Training.py
+    deps:
+      - src/CNN_Classifier/pipeline/Stage3_Training.py
+      - config/config.yaml
+      - artifacts/data_ingestion/Cancer Data
+      - artifacts/prepare_base_model
+    params:
+      - IMAGE_SIZE
+      - EPOCHS
+      - BATCH_SIZE
+      - AUGMENTATION
+    outs:
+      - artifacts/training/model.h5
+
+
+  evaluation:
+    cmd: python src/CNN_Classifier/pipeline/Stage4_Evaluation.py
+    deps:
+      - src/CNN_Classifier/pipeline/Stage4_Evaluation.py
+      - config/config.yaml
+      - artifacts/data_ingestion/Cancer Data
+      - artifacts/training/model.h5
+    params:
+      - IMAGE_SIZE
+      - BATCH_SIZE
+    metrics:
+    - scores.json:
+        cache: false

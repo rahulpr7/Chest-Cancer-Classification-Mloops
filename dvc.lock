@@ -1,0 +1,113 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/CNN_Classifier/pipeline/Stage1_Data_Ingestion.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 743a88cf436cbf140b8364d8d35bec47
+      size: 581
+    - path: src/CNN_Classifier/pipeline/Stage1_Data_Ingestion.py
+      hash: md5
+      md5: cc6ce33e17e119db5a5acd5c2cee91ef
+      size: 915
+    outs:
+    - path: artifacts/data_ingestion/Cancer Data
+      hash: md5
+      md5: 476ed1ee28414ced2e59c4426d3630ff.dir
+      size: 49247431
+      nfiles: 343
+  prepare_base_model:
+    cmd: python src/CNN_Classifier/pipeline/Stage2_Prepare_Base.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 743a88cf436cbf140b8364d8d35bec47
+      size: 581
+    - path: src/CNN_Classifier/pipeline/Stage2_Prepare_Base.py
+      hash: md5
+      md5: 537633a00c0cc84e8f4344e95a927a98
+      size: 1000
+    params:
+      params.yaml:
+        CLASSES: 2
+        IMAGE_SIZE:
+        - 224
+        - 224
+        - 3
+        INCLUDE_TOP: false
+        LEARNING_RATE: 0.01
+        WEIGHTS: imagenet
+    outs:
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: 60802eb79ab11a66b86669dc7932a438.dir
+      size: 118054560
+      nfiles: 2
+  training:
+    cmd: python src/CNN_Classifier/pipeline/Stage3_Training.py
+    deps:
+    - path: artifacts/data_ingestion/Cancer Data
+      hash: md5
+      md5: 476ed1ee28414ced2e59c4426d3630ff.dir
+      size: 49247431
+      nfiles: 343
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: 60802eb79ab11a66b86669dc7932a438.dir
+      size: 118054560
+      nfiles: 2
+    - path: config/config.yaml
+      hash: md5
+      md5: 743a88cf436cbf140b8364d8d35bec47
+      size: 581
+    - path: src/CNN_Classifier/pipeline/Stage3_Training.py
+      hash: md5
+      md5: fc1527b402602e2f8cce6473eb9b2b3c
+      size: 927
+    params:
+      params.yaml:
+        AUGMENTATION: true
+        BATCH_SIZE: 16
+        EPOCHS: 1
+        IMAGE_SIZE:
+        - 224
+        - 224
+        - 3
+    outs:
+    - path: artifacts/training/model.h5
+      hash: md5
+      md5: 0c020dd22640d0cbecde64f447e405d8
+      size: 59337520
+  evaluation:
+    cmd: python src/CNN_Classifier/pipeline/Stage4_Evaluation.py
+    deps:
+    - path: artifacts/data_ingestion/Cancer Data
+      hash: md5
+      md5: 476ed1ee28414ced2e59c4426d3630ff.dir
+      size: 49247431
+      nfiles: 343
+    - path: artifacts/training/model.h5
+      hash: md5
+      md5: 0c020dd22640d0cbecde64f447e405d8
+      size: 59337520
+    - path: config/config.yaml
+      hash: md5
+      md5: 743a88cf436cbf140b8364d8d35bec47
+      size: 581
+    - path: src/CNN_Classifier/pipeline/Stage4_Evaluation.py
+      hash: md5
+      md5: c606e77d9250f7145702b91e8e2d8040
+      size: 930
+    params:
+      params.yaml:
+        BATCH_SIZE: 16
+        IMAGE_SIZE:
+        - 224
+        - 224
+        - 3
+    outs:
+    - path: scores.json
+      hash: md5
+      md5: ab54cbfd99e2ef5c8a25731011b19ba7
+      size: 73
