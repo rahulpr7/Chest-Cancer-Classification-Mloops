@@ -5,6 +5,11 @@ This project implements a **production-ready deep learning pipeline** for chest 
 
 ---
 
+## 🖥️ Application Interface
+
+![Chest Cancer Classification UI](templates/ui.png)
+
+
 ## 🔁 Project Workflow
 
 1. Update `config.yaml`
@@ -36,8 +41,9 @@ MLFLOW_TRACKING_URI=https://dagshub.com/rahulpr7/Chest-Cancer-Classification-Mlo
 1. dvc init
 2. dvc repro
 3. dvc dag
+```
 
-# AWS-CICD-Deployment-with-Github-Actions
+# AWS-CICD-Deployment-with-Github-Actions 
 
 ## 1. Login to AWS console.
 
@@ -90,11 +96,11 @@ MLFLOW_TRACKING_URI=https://dagshub.com/rahulpr7/Chest-Cancer-Classification-Mlo
 
 	newgrp docker
 	
-# 6. Configure EC2 as self-hosted runner:
+## 6. Configure EC2 as self-hosted runner:
     setting>actions>runner>new self hosted runner> choose os> then run command one by one
 
 
-# 7. Setup github secrets:
+## 7. Setup github secrets:
 
     AWS_ACCESS_KEY_ID=
 
@@ -105,4 +111,3 @@ MLFLOW_TRACKING_URI=https://dagshub.com/rahulpr7/Chest-Cancer-Classification-Mlo
     AWS_ECR_LOGIN_URI = demo>>  566373416292.dkr.ecr.ap-south-1.amazonaws.com
 
     ECR_REPOSITORY_NAME = simple-app
-
